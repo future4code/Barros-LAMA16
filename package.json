@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "Template para o projeto LAMA",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "dev":	"ts-node-dev ./src/index.ts",
+    "start":	"tsc && node ./build/index.js"
+  },
   "keywords": [
     "api",
     "LAMA"
