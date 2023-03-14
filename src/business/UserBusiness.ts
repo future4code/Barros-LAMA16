@@ -1,5 +1,5 @@
 import { UserDatabase } from './../data/UserDatabase';
-import { UserInputDTO, LoginInputDTO } from "../model/User";
+import { UserInputDTO, LoginInputDTO, AuthenticatorData } from "../model/User";
 import { IdGenerator } from "../services/IdGenerator";
 import { Authenticator } from '../services/Authenticator';
 
@@ -42,5 +42,21 @@ export class UserBusiness {
             const token = this.authenticator.generateToken({id: verifyEmail[0].id})
             return token
             
+    }
+
+    getProfile = async (authToken:string)=>{
+        try {
+
+            if(!authToken) throw new Error("Token nao foi inserido.");
+            
+            const token = this.authenticator.getData(authToken) 
+
+            if(!token) throw new Error("Nao autorizado")
+
+            const result = await this.userDatabase.getProfile(token)
+            return result
+        } catch (error:any) {
+            throw new Error(error.message);
+        }
     }
 }

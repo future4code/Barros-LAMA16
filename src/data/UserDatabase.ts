@@ -1,11 +1,11 @@
 import { BaseDatabase } from "./BaseDatabase";
-import { NewUser, User } from "../model/User";
+import { AuthenticatorData, NewUser, User } from "../model/User";
 
 export class UserDatabase extends BaseDatabase {
 
-  TABLE_NAME = "LAMA_Users";
+    TABLE_NAME = "LAMA_Users";
 
-signup = async (user:NewUser)=>{
+    signup = async (user:NewUser)=>{
     try {
         const {id, name,  email, password, role} = user
         const newUser = {
@@ -24,7 +24,7 @@ signup = async (user:NewUser)=>{
     }
   }
 
- getUserByEmail = async (email: string) =>{
+    getUserByEmail = async (email: string) =>{
     try {
         const result = await UserDatabase.connection(this.TABLE_NAME)
           .select()
@@ -34,4 +34,16 @@ signup = async (user:NewUser)=>{
       throw new Error(error.message);
     }
   }
+
+    getProfile = async (token:AuthenticatorData)=>{
+    try {
+      const result = await UserDatabase.connection(this.TABLE_NAME)
+        .select()
+        .where({id: token.id})
+        return result[0]       
+    } catch (error:any) {
+        throw new Error(error.message);
+    }
+  }
+
 }

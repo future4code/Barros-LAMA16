@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { UserInputDTO, LoginInputDTO} from "../model/User";
+import { UserInputDTO, LoginInputDTO, AuthenticatorData} from "../model/User";
 import { UserBusiness } from "../business/UserBusiness";
 
 export class UserController {
@@ -37,6 +37,17 @@ export class UserController {
             res.status(200).send({message:'Login realizado com sucesso.', token})
         } catch (error:any) {
             res.status(400).send({ error: error.message });
+        }
+    }
+
+    getProfile = async (req:Request, res:Response)=>{
+        try {
+            const authToken = req.headers.authorization as string
+
+            const result = await this.userBusiness.getProfile(authToken)
+            res.status(200).send(result);
+        } catch (error:any) {
+            res.status(400).send(error.message);
         }
     }
 
