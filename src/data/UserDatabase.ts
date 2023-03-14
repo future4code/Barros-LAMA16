@@ -1,29 +1,37 @@
 import { BaseDatabase } from "./BaseDatabase";
-import { User } from "../model/User";
+import { NewUser, User } from "../model/User";
 
 export class UserDatabase extends BaseDatabase {
 
-  TABLE_NAME = "";
+  TABLE_NAME = "LAMA_Users";
 
-  public async createUser(
-    id: string,
-    email: string,
-    name: string,
-    password: string,
-    role: string
-  ): Promise<void> {
+signup = async (user:NewUser)=>{
     try {
-     
+        const {id, name,  email, password, role} = user
+        const newUser = {
+          id,
+          name,
+          email,
+          password,
+          role
+        }
+
+        await UserDatabase.connection(this.TABLE_NAME)
+        .insert(newUser)
     } catch (error:any) {
-      throw new Error(error.sqlMessage || error.message);
+      throw new Error(error.message);
+      
     }
   }
 
-  public async getUserByEmail(email: string){
+ getUserByEmail = async (email: string) =>{
     try {
-      
+        const result = await UserDatabase.connection(this.TABLE_NAME)
+          .select()
+          .where({email})
+        return result  
     } catch (error:any) {
-      throw new Error(error.sqlMessage || error.message);
-    }   
+      throw new Error(error.message);
+    }
   }
 }
