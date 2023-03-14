@@ -1,0 +1,10 @@
+### registrar show
+
+POST http://localhost:3003/shows/register
+Content-Type: application/json
+
+{
+    "weekDay":"",
+    "startTime":"",
+    "endTime":"",
+}
