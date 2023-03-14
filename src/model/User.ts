@@ -89,3 +89,7 @@ export interface NewUser{
     name: string;
     role: string;
 }
+
+export interface AuthenticatorData{
+    id:string
+}
