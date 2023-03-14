@@ -81,3 +81,11 @@ export enum UserRole{
     NORMAL = "NORMAL",
     ADMIN = "ADMIN"
 }
+
+export interface NewUser{
+    id: string,
+    email: string;
+    password: string;
+    name: string;
+    role: string;
+}

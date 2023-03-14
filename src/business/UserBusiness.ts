@@ -1,43 +1,46 @@
+import { UserDatabase } from './../data/UserDatabase';
 import { UserInputDTO, LoginInputDTO } from "../model/User";
-import { UserDatabase } from "../data/UserDatabase";
 import { IdGenerator } from "../services/IdGenerator";
-import { HashManager } from "../services/HashManager";
-import { Authenticator } from "../services/Authenticator";
+import { Authenticator } from '../services/Authenticator';
 
 export class UserBusiness {
+    userDatabase = new UserDatabase()
+    authenticator = new Authenticator()
 
-    async createUser(user: UserInputDTO) {
+    signup = async (user: UserInputDTO)=> {
+
+        const {name, email, password, role} = user
+        const verifyEmail = await this.userDatabase.getUserByEmail(email)
+        
+        if(!name || !email || !password) throw new Error('Todos os campos devem ser preenchidos.')
+        if(verifyEmail.length > 0) throw new Error('ja extste um usuario ja cadastrado com este endereco de email.')
+        if(!email.includes('@')) throw new Error('Formato de email invalido.')
 
         const idGenerator = new IdGenerator();
         const id = idGenerator.generate();
 
-        const hashManager = new HashManager();
-        const hashPassword = await hashManager.hash(user.password);
-
-        const userDatabase = new UserDatabase();
-        await userDatabase.createUser(id, user.email, user.name, hashPassword, user.role);
-
-        const authenticator = new Authenticator();
-        const accessToken = authenticator.generateToken({ id, role: user.role });
-
-        return accessToken;
+        const newUser = {
+            id,
+            name,
+            email,
+            password,
+            role
+        }
+        await this.userDatabase.signup(newUser);
+        const token = this.authenticator.generateToken({id})
+        return token
     }
 
-    async getUserByEmail(user: LoginInputDTO) {
+    login = async(user: LoginInputDTO)=>{
 
-        const userDatabase = new UserDatabase();
-        const userFromDB = await userDatabase.getUserByEmail(user.email);
+            const {email, password} = user
 
-        const hashManager = new HashManager();
-        const hashCompare = await hashManager.compare(user.password, userFromDB.getPassword());
+            const verifyEmail = await this.userDatabase.getUserByEmail(email as string)
+            if(verifyEmail.length !== 1) throw new Error("Usuario nao localizado.");
+            if(verifyEmail[0].password !== password) throw new Error("Senha invalida");
 
-        const authenticator = new Authenticator();
-        const accessToken = authenticator.generateToken({ id: userFromDB.getId(), role: userFromDB.getRole() });
-
-        if (!hashCompare) {
-            throw new Error("Invalid Password!");
-        }
-
-        return accessToken;
+            const token = this.authenticator.generateToken({id: verifyEmail[0].id})
+            return token
+            
     }
 }
