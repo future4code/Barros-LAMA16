@@ -4,11 +4,15 @@ import { Request, Response } from "express"
 export class BandsController {
     bandsBusiness = new BandsBusiness()
     register = async (req:Request, res:Response)=>{
+
+        const authToken = req.headers.authorization as string
+
         try {
             const newBand = {
                 nameBand: req.body.nameBand,
                 musicGender : req.body.musicGender,
-                responsible : req.body.responsible
+                responsible : req.body.responsible,
+                authToken : authToken
             }
 
             await this.bandsBusiness.register(newBand)

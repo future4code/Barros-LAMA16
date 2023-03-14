@@ -45,5 +45,4 @@ export class UserDatabase extends BaseDatabase {
         throw new Error(error.message);
     }
   }
-
 }
