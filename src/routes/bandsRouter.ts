@@ -7,3 +7,4 @@ const bandsController = new BandsController
 
 bandsRouter.post('/register',bandsController.register)
 bandsRouter.get('/band/:id',bandsController.getBandById)
+bandsRouter.get('/allBands/',bandsController.getAllBands)

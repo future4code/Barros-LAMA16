@@ -3,6 +3,16 @@ import { BaseDatabase } from "./BaseDatabase";
 export class BandsDatabase extends BaseDatabase{
     TABLE_NAME = 'LAMA_Bands'
 
+    getAllBands = async () =>{
+        try {
+            const result = await BandsDatabase.connection(this.TABLE_NAME)
+                .select()
+                return result
+        } catch (error:any) {
+            throw new Error(error.message);
+        }
+    }
+
     register = async (Band:any)=>{
         try {
             await BandsDatabase.connection(this.TABLE_NAME)
