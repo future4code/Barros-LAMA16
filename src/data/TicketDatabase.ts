@@ -42,4 +42,17 @@ export class TicketDatabase extends BaseDatabase{
             throw new Error(error.message);
         }
     }
+
+    getTicketById = async (id:string)=>{
+        try {
+          const result = await TicketDatabase.connection(this.TABLE_NAME)
+          .select()
+          .where({
+            id:id
+          })
+          return result
+        } catch (error:any) {
+          throw new Error(error.message);
+        }
+      }
 }

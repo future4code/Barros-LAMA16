@@ -63,4 +63,17 @@ export class ShowsDatabase extends BaseDatabase{
             throw new Error(error.message);
         }
     }
+
+    getShowById = async (id:string)=>{
+        try {
+          const result = await ShowsDatabase.connection(this.TABLE_NAME)
+          .select()
+          .where({
+            id:id
+          })
+          return result
+        } catch (error:any) {
+          throw new Error(error.message);
+        }
+      }
 }
