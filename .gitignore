@@ -1,6 +1,4 @@
 node_modules
 .env
 package-lock.json
-UsersRequest.rest
-BandsRequest.rest
-ShowsRequest.rest
+requests
