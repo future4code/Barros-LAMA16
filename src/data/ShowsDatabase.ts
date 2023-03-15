@@ -50,14 +50,14 @@ export class ShowsDatabase extends BaseDatabase{
     getAllShowsByDay = async (day:string)=>{
         try {
             const result = await ShowsDatabase.connection(this.TABLE_NAME)
-                .select('')
-                .join('LAMA_Bands','LAMA_Shows.band_id','=','LAMA_Shows.id')
+                .select('name_band', 'music_genre')
+                .join('LAMA_Bands','LAMA_Shows.band_id','=','LAMA_Bands.id')
                 .where({
                     week_day:day
                 })
-                // .orderBy([
-                //     {column:'start_time', order:'asc'}
-                // ])
+                .orderBy([
+                    {column:'start_time', order:'asc'}
+                ])
             return result    
         } catch (error:any) {
             throw new Error(error.message);
