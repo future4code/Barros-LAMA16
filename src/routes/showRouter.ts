@@ -5,4 +5,6 @@ export const showRouter = express.Router()
 
 const showsController = new ShowController()
 
-showRouter.post('/register', showsController.registerShow)
+showRouter.post('/register/:id', showsController.registerShow)
+showRouter.get('/allShows', showsController.getAllShows)
+showRouter.get('/showsByDay/:day', showsController.getAllShowsByDay)
