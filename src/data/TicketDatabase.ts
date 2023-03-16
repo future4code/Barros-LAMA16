@@ -1,10 +1,11 @@
+import { Ticket } from "../model/tickets";
 import { BaseDatabase } from "./BaseDatabase";
 
 export class TicketDatabase extends BaseDatabase{
 
     TABLE_NAME = 'LAMA_Tickets'
     
-    createTicket = async (ticket:any)=>{
+    createTicket = async (ticket:Ticket)=>{
         try {
             const {id, nameTicket, value, showId, qtdTicket} = ticket
 
@@ -22,7 +23,7 @@ export class TicketDatabase extends BaseDatabase{
         }
     }
 
-    deleteTicket = async (id:any)=>{
+    deleteTicket = async (id:string)=>{
         try {
             await TicketDatabase.connection(this.TABLE_NAME)
                 .delete()

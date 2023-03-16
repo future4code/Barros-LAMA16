@@ -1,8 +1,10 @@
 import { ShowsDatabase } from '../data/ShowsDatabase';
 import { UserDatabase } from '../data/UserDatabase';
+import { Ticket, TicketsDTO } from '../model/tickets';
 import { Authenticator } from '../services/Authenticator';
 import { IdGenerator } from '../services/IdGenerator';
 import { TicketDatabase } from './../data/TicketDatabase';
+
 export class TicketBusiness{
 
    ticketDatabase = new TicketDatabase()
@@ -11,9 +13,9 @@ export class TicketBusiness{
    userDatabase = new UserDatabase()
    authenticator = new Authenticator();
     
-    createTicket = async (ticket:any)=>{
+    createTicket = async (ticket:TicketsDTO, authToken:string)=>{
         try {
-            const {nameTicket, value, showId, qtdTicket, authToken} = ticket
+            const {nameTicket, value, showId, qtdTicket,} = ticket
 
             if(!authToken) throw new Error("Token nao informado");
             const token = this.authenticator.getData(authToken)
@@ -22,14 +24,16 @@ export class TicketBusiness{
             const verifyRole = await this.userDatabase.getProfile(token)
             if(verifyRole.role !== 'ADMIN') throw new Error("Voce nao esta permitido para realizar esta acao.")
 
-            if (nameTicket || value || qtdTicket) throw new Error("Todos os campos precisam ser informados.");
+            if (!nameTicket ) throw new Error("Informe o nome do ingresso.");
+            if (!qtdTicket ) throw new Error("Informe a quantidade disponivel");
+            if (!value ) throw new Error("Informe o valor do ingresso.");
             
             const verifyShow = await this.showDatabase.getShowById(showId)
             if(verifyShow.length !== 1) throw new Error("Show nao encontrado.");
 
             const id = this.generateId.generate()
 
-            const newTicket = {
+            const newTicket:Ticket = {
                 id,
                 nameTicket,
                 value,
@@ -44,9 +48,9 @@ export class TicketBusiness{
         }
     }
 
-   deleteTicket = async (ticket:any)=>{
+   deleteTicket = async (id:string, authToken:string)=>{
         try {
-            const {id, authToken} = ticket
+
             if(!authToken) throw new Error("Token nao informado");
             const token = this.authenticator.getData(authToken)
             if(!token) throw new Error("Nao autorizado")
@@ -54,7 +58,11 @@ export class TicketBusiness{
             const verifyRole = await this.userDatabase.getProfile(token)
             if(verifyRole.role !== 'ADMIN') throw new Error("Voce nao esta permitido para realizar esta acao.")
 
+            const verifyTicket = await this.ticketDatabase.getTicketById(id)
+            if(verifyTicket.length !== 1) throw new Error("ticket nao encontrado.");
+            
             await this.ticketDatabase.deleteTicket(id)
+
         } catch (error:any) {
             throw new Error(error.message);
         }

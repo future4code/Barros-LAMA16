@@ -1,4 +1,5 @@
 
+import { Show } from "../model/Shows";
 import { BaseDatabase } from "./BaseDatabase";
 
 export class ShowsDatabase extends BaseDatabase{
@@ -14,9 +15,9 @@ export class ShowsDatabase extends BaseDatabase{
         }
     }
 
-    registerShow = async (show:any)=>{
+    registerShow = async (show:Show, bandId:string)=>{
         try {
-            const {id, weekDay, startTime, endTime, bandId } = show
+            const {id, weekDay, startTime, endTime } = show
 
             const newShow = {
                 id,
@@ -36,7 +37,7 @@ export class ShowsDatabase extends BaseDatabase{
         }
     }
 
-    verifyHour = async (time:any)=>{
+    verifyHour = async (time:number)=>{
         try {
             const result = await ShowsDatabase.connection(this.TABLE_NAME)
             .select()
@@ -50,7 +51,7 @@ export class ShowsDatabase extends BaseDatabase{
     getAllShowsByDay = async (day:string)=>{
         try {
             const result = await ShowsDatabase.connection(this.TABLE_NAME)
-                .select('name_band', 'music_genre')
+                .select('name_band', 'music_genre', 'start_time')
                 .join('LAMA_Bands','LAMA_Shows.band_id','=','LAMA_Bands.id')
                 .where({
                     week_day:day

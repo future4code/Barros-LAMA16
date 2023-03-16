@@ -3,6 +3,7 @@ import { ShowsDatabase } from "../data/ShowsDatabase";
 import { UserDatabase } from "../data/UserDatabase";
 import { IdGenerator } from "../services/IdGenerator";
 import { TicketDatabase } from '../data/TicketDatabase';
+import { Purchase, PurchaseDTO } from "../model/purchase";
 
 export class PurchaseBusiness{
 
@@ -12,7 +13,7 @@ export class PurchaseBusiness{
     ticketDatabase = new TicketDatabase()
     generate = new IdGenerator()
 
-    ticketPurchase = async (ticket:any)=>{
+    ticketPurchase = async (ticket:PurchaseDTO)=>{
         try {
             const {userId, showId, ticketId, qtdPurchase} = ticket
 
@@ -33,7 +34,7 @@ export class PurchaseBusiness{
 
             const id = this.generate.generate()
 
-            const newTicket = {
+            const newTicket:Purchase = {
                 id,
                 userId,
                 showId,
@@ -43,6 +44,16 @@ export class PurchaseBusiness{
 
             await this.purchaseDatabase.ticketPurchase(newTicket)
             
+        } catch (error:any) {
+            throw new Error(error.message);
+        }
+    }
+
+    allTicketsPurchase = async ()=>{
+        try {
+            const result = await this.purchaseDatabase.getTicketById()
+            
+            return result
         } catch (error:any) {
             throw new Error(error.message);
         }

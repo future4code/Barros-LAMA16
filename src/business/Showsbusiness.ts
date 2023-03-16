@@ -1,6 +1,7 @@
 import { IdGenerator } from './../services/IdGenerator';
 import { ShowsDatabase } from "../data/ShowsDatabase"
 import { BandsDatabase } from '../data/BandsDatabase';
+import { Show, ShowDTO } from '../model/Shows';
 
 export class ShowsBusiness{
     showsDatabase = new ShowsDatabase()
@@ -16,15 +17,15 @@ export class ShowsBusiness{
         }
     }
 
-    registerShow = async (show:any)=>{
+    registerShow = async (show:ShowDTO, bandId:any)=>{
         try {
-            const { weekDay, startTime, endTime, bandId} = show
+            const { weekDay, startTime, endTime} = show
             if(!weekDay || !startTime || !endTime) throw new Error("todos os campos precisam ser preenchidos.");
-            if(!bandId) throw new Error("o id nao foi inserido.");
+            if(!bandId.id) throw new Error("o id nao foi inserido.");
             
             const bandExist = await this.bandDatabase.getBandById(bandId.id)
-            
             if(bandExist.length !== 1) throw new Error("Banda nao encontrada ou banda nao registrada.");
+            
             if(startTime > endTime) throw new Error("Formato invalido.. o inicio do show nao pode ser apos o termino do mesmo.");
             if(startTime < 8 || startTime > 22) throw new Error("Horario permitido para iniciar o show e entre 8H as 22H");
             if(endTime < 9 || endTime > 23) throw new Error("Horario permitido para termino do show e entre 9H as 23H")
@@ -39,16 +40,15 @@ export class ShowsBusiness{
         
             const id = this.idGenerator.generate()
 
-            const newShow = {
+            const newShow:Show = {
                 id,
                 weekDay,
                 startTime,
                 endTime,
-                bandId: bandId.id
             }
 
             if(weekDay === 'Sexta'  || weekDay === 'Sábado' || weekDay === 'Domingo'){
-                await this.showsDatabase.registerShow(newShow)
+                await this.showsDatabase.registerShow(newShow, bandId.id)
                 
             } else{
                 throw new Error("Dia da semana invalido");
