@@ -41,6 +41,7 @@ Realizar o gerenciamento de shows do evento, facilitando e agilizando todos os p
 
 ## Acessando o projeto
 
+* Realize o git clone do repositorio: git clone https://github.com/future4code/Barros-LAMA16.git
 * Rode o comando **NPM INSTALL**
 * No **MYSQL**, crie as tabelas e colunas igual ao modelo do banco de dados
 * Configure o seu **DOTENV** para acessar o banco de dados
