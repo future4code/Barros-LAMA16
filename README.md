@@ -33,4 +33,6 @@ Sistema feito para o gerenciamento de shows do evento.
 
 ## Modelagem do banco de dados
 
+![Modelagem do banco de dados](https://i.ibb.co/kSJwCVy/Captura-de-Tela-2023-03-16-a-s-12-52-15.png)
+
 
