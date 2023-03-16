@@ -19,6 +19,16 @@ Márcio Emmanuel Gonçalves
 * Criação de ingressos para venda
 * O usuário podera comprar ingressos para um show
 
+## Tecnologias e conceitos
+
+   * NodeJs
+   * Knex
+   * Mysql
+   * TypeScript
+   * Express
+   * UUID
+   * Autenticação e autorização
+   * Router
 
 ## Links
 
@@ -27,9 +37,13 @@ Márcio Emmanuel Gonçalves
  
 ## Objetivo do projeto
 
-Sistema feito para o gerenciamento de shows do evento.
+Realizar o gerenciamento de shows do evento, facilitando e agilizando todos os processos, quanto dos colaboradores, quanto dos usuários.
 
 ## Acessando o projeto
+
+* Rode o comando **NPM INSTALL**
+* No **MYSQL**, crie as tabelas e colunas igual ao modelo do banco de dados
+* Configure o seu **DOTENV** para acessar o banco de dados
 
 ## Modelagem do banco de dados
 
