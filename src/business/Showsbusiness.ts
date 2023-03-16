@@ -62,8 +62,14 @@ export class ShowsBusiness{
 
     getAllShowsByDay = async (day:string)=>{
         try {
-            const result = await this.showsDatabase.getAllShowsByDay(day)  
-            return result
+            if(!day) throw new Error("Dia nao informado.")
+            
+            if(day === 'Sexta'  || day === 'Sábado' || day === 'Domingo'){
+                const result = await this.showsDatabase.getAllShowsByDay(day)  
+                return result        
+            } else{
+                throw new Error("Dia da semana invalido");
+            }
         } catch (error:any) {
             throw new Error(error.message);
             
