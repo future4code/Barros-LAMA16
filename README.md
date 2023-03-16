@@ -32,8 +32,8 @@ Márcio Emmanuel Gonçalves
 
 ## Links
 
-* [Link da API]()
-* [Link da documentação POSTMAN]()
+* [Link da API](https://lama-labenu-music-awards.onrender.com)
+* [Link da documentação POSTMAN](https://documenter.getpostman.com/view/22376313/2s93Jxs2Mk)
  
 ## Objetivo do projeto
 
