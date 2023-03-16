@@ -29,7 +29,6 @@ export class BandsBusiness{
             if(!token) throw new Error("Nao autorizado");
             
             const verifyRole = await this.userDatabase.getProfile(token)
-
             if(verifyRole.role !== 'ADMIN') throw new Error("Voce nao esta permitido realizar esta acao.")
           
             const verifyName = await this.bandsDatabase.searchByNameBand(nameBand)

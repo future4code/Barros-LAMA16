@@ -8,12 +8,14 @@ export class TicketController{
         try {
             const {nameTicket, value, qtdTicket} = req.body
             const {showId} = req.params
+            const authToken = req.headers.authorization as string
 
             const newTicket = {
                 nameTicket,
                 value,
                 qtdTicket,
-                showId
+                showId,
+                authToken
             }
 
             await this.ticketBusiness.createTicket(newTicket)
@@ -27,7 +29,13 @@ export class TicketController{
     deleteTicket = async (req:Request, res:Response)=>{
         try {
             const {id} = req.params
-            await this.ticketBusiness.deleteTicket(id)
+            const authToken = req.headers.authorization as string
+
+            const newTicket = {
+                id,
+                authToken
+            }
+            await this.ticketBusiness.deleteTicket(newTicket)
             res.status(200).send({message: 'Ingresso deletado com sucesso.'})
         } catch (error:any) {
             res.status(400).send(error.message);
