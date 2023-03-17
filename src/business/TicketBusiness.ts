@@ -1,3 +1,5 @@
+import { NameNotInserted, QtdTicket, ValueTicketNotInserted } from './../error/TicketError';
+import { NotAuthorized, ShowNotFound, TicketNotFound, TokenNotInserted } from './../error/customError';
 import { ShowsDatabase } from '../data/ShowsDatabase';
 import { UserDatabase } from '../data/UserDatabase';
 import { Ticket, TicketsDTO } from '../model/tickets';
@@ -17,19 +19,19 @@ export class TicketBusiness{
         try {
             const {nameTicket, value, showId, qtdTicket,} = ticket
 
-            if(!authToken) throw new Error("Token nao informado");
+            if(!authToken) throw TokenNotInserted
             const token = this.authenticator.getData(authToken)
-            if(!token) throw new Error("Nao autorizado")
+            if(!token) throw TokenNotInserted
             
             const verifyRole = await this.userDatabase.getProfile(token)
-            if(verifyRole.role !== 'ADMIN') throw new Error("Voce nao esta permitido para realizar esta acao.")
+            if(verifyRole.role !== 'ADMIN') throw NotAuthorized
 
-            if (!nameTicket ) throw new Error("Informe o nome do ingresso.");
-            if (!qtdTicket ) throw new Error("Informe a quantidade disponivel");
-            if (!value ) throw new Error("Informe o valor do ingresso.");
+            if (!nameTicket ) throw NameNotInserted
+            if (!qtdTicket ) throw QtdTicket
+            if (!value ) throw ValueTicketNotInserted
             
             const verifyShow = await this.showDatabase.getShowById(showId)
-            if(verifyShow.length !== 1) throw new Error("Show nao encontrado.");
+            if(verifyShow.length !== 1) throw ShowNotFound
 
             const id = this.generateId.generate()
 
@@ -51,15 +53,15 @@ export class TicketBusiness{
    deleteTicket = async (id:string, authToken:string)=>{
         try {
 
-            if(!authToken) throw new Error("Token nao informado");
+            if(!authToken) throw TokenNotInserted
             const token = this.authenticator.getData(authToken)
-            if(!token) throw new Error("Nao autorizado")
+            if(!token) throw TokenNotInserted
 
             const verifyRole = await this.userDatabase.getProfile(token)
-            if(verifyRole.role !== 'ADMIN') throw new Error("Voce nao esta permitido para realizar esta acao.")
+            if(verifyRole.role !== 'ADMIN') throw NotAuthorized
 
             const verifyTicket = await this.ticketDatabase.getTicketById(id)
-            if(verifyTicket.length !== 1) throw new Error("ticket nao encontrado.");
+            if(verifyTicket.length !== 1) throw TicketNotFound
             
             await this.ticketDatabase.deleteTicket(id)
 

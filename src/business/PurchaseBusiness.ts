@@ -4,6 +4,8 @@ import { UserDatabase } from "../data/UserDatabase";
 import { IdGenerator } from "../services/IdGenerator";
 import { TicketDatabase } from '../data/TicketDatabase';
 import { Purchase, PurchaseDTO } from "../model/purchase";
+import { QtdFormat, QtdNotInserted } from "../error/purchaseError";
+import { ShowNotFound, TicketNotFound, UserNotFound } from "../error/customError";
 
 export class PurchaseBusiness{
 
@@ -17,18 +19,18 @@ export class PurchaseBusiness{
         try {
             const {userId, showId, ticketId, qtdPurchase} = ticket
 
-            if(!qtdPurchase) throw new Error("Quantidade nao informada")
-            if(isNaN(qtdPurchase)) throw new Error("A quantidade deve ser informada em formato de numero.");
+            if(!qtdPurchase) throw QtdNotInserted
+            if(isNaN(qtdPurchase)) throw QtdFormat
             
 
             const verifyUser = await this.userDatabase.getUserById(userId)
-            if(verifyUser.length !== 1) throw new Error("Usuario nao encontrado.");
+            if(verifyUser.length !== 1) throw UserNotFound
 
             const verifyShow = await this.showDatabase.getShowById(showId)
-            if(verifyShow.length !== 1) throw new Error("Show nao encontrado.");
+            if(verifyShow.length !== 1) throw ShowNotFound
             
             const verifyTicket = await this.ticketDatabase.getTicketById(ticketId)
-            if(verifyTicket.length !== 1) throw new Error("ticket nao encontrado.");
+            if(verifyTicket.length !== 1) TicketNotFound
 
             
 

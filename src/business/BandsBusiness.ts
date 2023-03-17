@@ -2,6 +2,7 @@ import { BandsDatabase } from '../data/BandsDatabase';
 import { UserDatabase } from '../data/UserDatabase';
 import { IdGenerator } from './../services/IdGenerator';
 import { Authenticator } from '../services/Authenticator';
+import { BandExist, BandNotFound, BodyNotInserted, NotAuthorized, NotAuthorizedAdmin, TokenNotInserted } from '../error/customError';
 
 export class BandsBusiness{
     idGenerator = new IdGenerator();
@@ -21,18 +22,18 @@ export class BandsBusiness{
     register = async (Band:any) =>{
         try {
             const {nameBand, musicGenre, responsible, authToken} = Band
-            if(!nameBand || !musicGenre || !responsible) throw new Error('Todos os campos precisam ser informados.');
+            if(!nameBand || !musicGenre || !responsible) throw BodyNotInserted
             
-            if(!authToken) throw new Error("Token nao inserido");
+            if(!authToken) throw TokenNotInserted
             const token = this.authenticator.getData(authToken)
             
-            if(!token) throw new Error("Nao autorizado");
+            if(!token) throw NotAuthorized
             
             const verifyRole = await this.userDatabase.getProfile(token)
-            if(verifyRole.role !== 'ADMIN') throw new Error("Voce nao esta permitido realizar esta acao.")
+            if(verifyRole.role !== 'ADMIN') throw NotAuthorizedAdmin
           
             const verifyName = await this.bandsDatabase.searchByNameBand(nameBand)
-            if(verifyName.length === 1) throw new Error("Já existe uma banda com este nome.");
+            if(verifyName.length === 1) throw BandExist
             
             const id = this.idGenerator.generate()
 
@@ -53,11 +54,9 @@ export class BandsBusiness{
     getBandById = async (id:string)=>{
         try {
            const result = await this.bandsDatabase.getBandById(id)
-           if(result.length != 1) throw new Error("Banda nao encontrada.");
+           if(result.length !== 1) throw BandNotFound
 
            return result
-           
-           
         } catch (error:any) {
             throw new Error(error.message);
         }
