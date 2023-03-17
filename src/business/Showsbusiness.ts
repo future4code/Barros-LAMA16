@@ -1,7 +1,10 @@
+import { FormatInvalidEndTime, FormatInvalidStartTime, FormatInvalidTime, HourNotAvailable, InvalidDay } from './../error/ShowError';
 import { IdGenerator } from './../services/IdGenerator';
 import { ShowsDatabase } from "../data/ShowsDatabase"
 import { BandsDatabase } from '../data/BandsDatabase';
 import { Show, ShowDTO } from '../model/Shows';
+import { BandNotFound, BodyNotInserted } from '../error/customError';
+import { FormatInvalidHour, IdBandNotInserted } from '../error/ShowError';
 
 export class ShowsBusiness{
     showsDatabase = new ShowsDatabase()
@@ -20,23 +23,23 @@ export class ShowsBusiness{
     registerShow = async (show:ShowDTO, bandId:any)=>{
         try {
             const { weekDay, startTime, endTime} = show
-            if(!weekDay || !startTime || !endTime) throw new Error("todos os campos precisam ser preenchidos.");
-            if(!bandId.id) throw new Error("o id nao foi inserido.");
+            if(!weekDay || !startTime || !endTime) throw BodyNotInserted
+            if(!bandId.id) throw IdBandNotInserted
             
             const bandExist = await this.bandDatabase.getBandById(bandId.id)
-            if(bandExist.length !== 1) throw new Error("Banda nao encontrada ou banda nao registrada.");
+            if(bandExist.length !== 1) throw BandNotFound
             
-            if(startTime > endTime) throw new Error("Formato invalido.. o inicio do show nao pode ser apos o termino do mesmo.");
-            if(startTime < 8 || startTime > 22) throw new Error("Horario permitido para iniciar o show e entre 8H as 22H");
-            if(endTime < 9 || endTime > 23) throw new Error("Horario permitido para termino do show e entre 9H as 23H")
+            if(startTime > endTime) throw FormatInvalidHour
+            if(startTime < 8 || startTime > 22) throw FormatInvalidStartTime
+            if(endTime < 9 || endTime > 23) throw FormatInvalidEndTime
             
             const verifyHourShow = (endTime - startTime)
-            if(verifyHourShow !== 1) throw new Error("O show deve somente ser de 1 hora de apresentação.");
+            if(verifyHourShow !== 1) throw FormatInvalidTime
             
             
 
             const verifyHour = await this.showsDatabase.verifyHour(startTime)
-            if(verifyHour[0].week_day === weekDay && verifyHour[0].start_time === startTime ) throw new Error("Ja existe um show nesta data e horario");
+            if(verifyHour[0].week_day === weekDay && verifyHour[0].start_time === startTime ) throw HourNotAvailable
         
             const id = this.idGenerator.generate()
 
@@ -68,7 +71,7 @@ export class ShowsBusiness{
                 const result = await this.showsDatabase.getAllShowsByDay(day)  
                 return result        
             } else{
-                throw new Error("Dia da semana invalido");
+                throw InvalidDay
             }
         } catch (error:any) {
             throw new Error(error.message);
