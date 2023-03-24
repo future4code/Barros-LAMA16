@@ -13,7 +13,7 @@ export class Authenticator {
       },
       process.env.JWT_KEY as string,
       {
-        expiresIn,
+        expiresIn:'6h',
       }
     );
     return token;
