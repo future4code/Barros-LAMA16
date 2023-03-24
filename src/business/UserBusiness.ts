@@ -10,16 +10,17 @@ import { EmailExist, EmailFormat } from '../error/UserError';
 export class UserBusiness {
     userDatabase = new UserDatabase()
     authenticator = new Authenticator()
-
+    
     signup = async (user: UserInputDTO)=> {
-
+        
         const {name, email, password, role} = user
         const verifyEmail = await this.userDatabase.getUserByEmail(email)
         
-        if(!name || !email || !password) throw BodyNotInserted
-        if(verifyEmail.length > 0) throw EmailExist
-        if(!email.includes('@')) throw EmailFormat
-
+        if(!name || !email || !password) throw new BodyNotInserted
+        if(verifyEmail.length == 1) throw new EmailExist
+        console.log(verifyEmail.length);
+        if(!email.includes('@')) throw new EmailFormat
+        
         const idGenerator = new IdGenerator();
         const id = idGenerator.generate();
 
@@ -30,8 +31,10 @@ export class UserBusiness {
             password,
             role
         }
-        await this.userDatabase.signup(newUser);
         const token = this.authenticator.generateToken({id})
+
+        await this.userDatabase.signup(newUser);
+        
         return token
     }
 
@@ -40,8 +43,8 @@ export class UserBusiness {
             const {email, password} = user
 
             const verifyEmail = await this.userDatabase.getUserByEmail(email as string)
-            if(verifyEmail.length !== 1) throw UserNotFound
-            if(verifyEmail[0].password !== password) throw PasswordWrong
+            if(verifyEmail.length !== 1) throw new UserNotFound
+            if(verifyEmail[0].password !== password) throw new PasswordWrong
 
             const token = this.authenticator.generateToken({id: verifyEmail[0].id})
             return token
@@ -51,11 +54,11 @@ export class UserBusiness {
     getProfile = async (authToken:string)=>{
         try {
 
-            if(!authToken) throw TokenNotInserted
+            if(!authToken) throw new TokenNotInserted
             
             const token = this.authenticator.getData(authToken) 
 
-            if(!token) throw NotAuthorized
+            if(!token) throw new NotAuthorized
 
             const result = await this.userDatabase.getProfile(token)
             return result

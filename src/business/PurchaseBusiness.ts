@@ -19,15 +19,15 @@ export class PurchaseBusiness{
         try {
             const {userId, showId, ticketId, qtdPurchase} = ticket
 
-            if(!qtdPurchase) throw QtdNotInserted
-            if(isNaN(qtdPurchase)) throw QtdFormat
+            if(!qtdPurchase) throw new QtdNotInserted
+            if(isNaN(qtdPurchase)) throw new QtdFormat
             
 
             const verifyUser = await this.userDatabase.getUserById(userId)
-            if(verifyUser.length !== 1) throw UserNotFound
+            if(verifyUser.length !== 1) throw new UserNotFound
 
             const verifyShow = await this.showDatabase.getShowById(showId)
-            if(verifyShow.length !== 1) throw ShowNotFound
+            if(verifyShow.length !== 1) throw new ShowNotFound
             
             const verifyTicket = await this.ticketDatabase.getTicketById(ticketId)
             if(verifyTicket.length !== 1) TicketNotFound

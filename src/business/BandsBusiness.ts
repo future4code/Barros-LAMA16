@@ -22,18 +22,18 @@ export class BandsBusiness{
     register = async (Band:any) =>{
         try {
             const {nameBand, musicGenre, responsible, authToken} = Band
-            if(!nameBand || !musicGenre || !responsible) throw BodyNotInserted
+            if(!nameBand || !musicGenre || !responsible) throw new BodyNotInserted
             
-            if(!authToken) throw TokenNotInserted
+            if(!authToken) throw new TokenNotInserted
             const token = this.authenticator.getData(authToken)
             
-            if(!token) throw NotAuthorized
+            if(!token) throw new NotAuthorized
             
             const verifyRole = await this.userDatabase.getProfile(token)
-            if(verifyRole.role !== 'ADMIN') throw NotAuthorizedAdmin
+            if(verifyRole.role !== 'ADMIN') throw new NotAuthorizedAdmin
           
             const verifyName = await this.bandsDatabase.searchByNameBand(nameBand)
-            if(verifyName.length === 1) throw BandExist
+            if(verifyName.length === 1) throw new BandExist
             
             const id = this.idGenerator.generate()
 
@@ -54,7 +54,7 @@ export class BandsBusiness{
     getBandById = async (id:string)=>{
         try {
            const result = await this.bandsDatabase.getBandById(id)
-           if(result.length !== 1) throw BandNotFound
+           if(result.length !== 1) throw new BandNotFound
 
            return result
         } catch (error:any) {
