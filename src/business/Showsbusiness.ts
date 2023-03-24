@@ -23,23 +23,23 @@ export class ShowsBusiness{
     registerShow = async (show:ShowDTO, bandId:any)=>{
         try {
             const { weekDay, startTime, endTime} = show
-            if(!weekDay || !startTime || !endTime) throw BodyNotInserted
-            if(!bandId.id) throw IdBandNotInserted
+            if(!weekDay || !startTime || !endTime) throw new BodyNotInserted
+            if(!bandId.id) throw new IdBandNotInserted
             
             const bandExist = await this.bandDatabase.getBandById(bandId.id)
-            if(bandExist.length !== 1) throw BandNotFound
+            if(bandExist.length !== 1) throw new BandNotFound
             
-            if(startTime > endTime) throw FormatInvalidHour
-            if(startTime < 8 || startTime > 22) throw FormatInvalidStartTime
-            if(endTime < 9 || endTime > 23) throw FormatInvalidEndTime
+            if(startTime > endTime) throw new FormatInvalidHour
+            if(startTime < 8 || startTime > 22) throw new FormatInvalidStartTime
+            if(endTime < 9 || endTime > 23) throw new FormatInvalidEndTime
             
             const verifyHourShow = (endTime - startTime)
-            if(verifyHourShow !== 1) throw FormatInvalidTime
+            if(verifyHourShow !== 1) throw new FormatInvalidTime
             
             
 
             const verifyHour = await this.showsDatabase.verifyHour(startTime)
-            if(verifyHour[0].week_day === weekDay && verifyHour[0].start_time === startTime ) throw HourNotAvailable
+            if(verifyHour[0].week_day === weekDay && verifyHour[0].start_time === startTime ) throw new HourNotAvailable
         
             const id = this.idGenerator.generate()
 

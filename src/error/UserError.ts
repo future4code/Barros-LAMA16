@@ -8,7 +8,7 @@ export class UserNotFound extends BaseError{
 
 export class EmailExist extends BaseError{
     constructor(){
-        super(400, 'Já existe um usuário cadastrado com este endereç0 de email.')
+        super(400, 'Já existe um usuário cadastrado com este endereço de email.')
     }
 }
 
